@@ -1,0 +1,36 @@
+﻿<Window x:Class="Task_Quipu.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Task_Quipu"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Width="200" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <TextBox Name="textEnter" Text="enter"/>
+            <DockPanel>
+                <WrapPanel HorizontalAlignment="Center" DockPanel.Dock="Top" Margin="0,0,0,10">
+                    <Button Name="buttonOpenFile" Content=" Open file" Click="buttonOpenFile_Click"/>
+                </WrapPanel>
+            </DockPanel>
+            <Button Name="buttonStart" Height="20"  Content="Start" Click="buttonStart_Click"/>
+
+            <TextBlock Name="textProgress" Text="Progress" HorizontalAlignment="Center" Height="20"/>
+
+            <ProgressBar Name="progressBar" Height="20" Foreground="Green"/>
+
+            <Button Name="buttonExit" Content="Exit" Height="20" Background="Red" Click="buttonExit_Click"/>
+
+        </StackPanel>
+
+        <StackPanel Width="600" HorizontalAlignment="Left" Margin="200,0,0,0" Grid.ColumnSpan="2">
+          
+        </StackPanel>
+    </Grid>
+</Window>
