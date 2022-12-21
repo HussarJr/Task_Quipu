@@ -12,19 +12,13 @@
             <ColumnDefinition Width="600*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Height="150" Grid.Column="0">
-            <DockPanel>
-                <WrapPanel HorizontalAlignment="Center" DockPanel.Dock="Top" Margin="0,0,0,10">
-                    <Button Name="buttonOpenFile" Content=" Open file" Click="ButtonOpenFile_Click" HorizontalAlignment="Left" Width="200" Height="20"/>
-                </WrapPanel>
-            </DockPanel>
-            <Button Name="buttonStart" Height="20"  Content="Start" Click="ButtonStart_Click" Background="#00FF00"/>
-            <Button Name="buttonStop" Height="20"  Content="Stop" Click="ButtonStop_Click" Background="Red"/>
-            <TextBlock Name="textProgress" Text="Progress" HorizontalAlignment="Center" Height="20"/>
-
-            <ProgressBar Name="progressBar" Height="20" Foreground="#00FF7F"/>
-
-            <Button x:Name="buttonExit" Content="Exit" Height="20" Background="Red" Click="ButtonExit_Click"/>
+        <StackPanel Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Height="250" Grid.Column="0">
+            <Button Margin="5,10,5,10"  Name="buttonOpenFile" Content=" Open file" Click="ButtonOpenFile_Click" HorizontalAlignment="Left" Width="200" Height="20"/>
+            <Button Margin="5,10,5,10" Name="buttonStart" Height="20"  Content="Start" Click="ButtonStart_Click" Background="#00FF00"/>
+            <Button Margin="5,10,5,10" Name="buttonStop" Height="20"  Content="Stop" Click="ButtonStop_Click" Background="Orange"/>
+            <TextBlock Margin="5,10,5,10" Name="textProgress" Text="Progress" HorizontalAlignment="Center" Height="20"/>
+            <ProgressBar Margin="5,0,5,0" Name="progressBar" Height="20" Foreground="#00FF7F" />
+            <Button Margin="5,10,5,10" Name="buttonExit" Content="Exit" Height="20" Background="Red" Click="ButtonExit_Click"/>
 
         </StackPanel>
 
