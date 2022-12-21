@@ -31,8 +31,7 @@ namespace Task_Quipu
     {
         
         public MainWindow()
-        {
-
+        { 
             InitializeComponent();
         }
 
@@ -89,11 +88,9 @@ namespace Task_Quipu
                     urls[i].Code = response.StatusCode.ToString();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     urls[i].A = GetACount(responseBody);
-                    //Data.Items.Add(urls[i] + "\t" + response.StatusCode.ToString() + "\t" + GetACount(responseBody).ToString() + "\n"));
                 }
                 catch (Exception e)
                 {
-                    //Dispatcher.Invoke(() => Data.Items.Add(urls[i] + e.Message  + "\n"));
                     urls[i].Code = e.Message;
                     urls[i].A = 0;
                 }
