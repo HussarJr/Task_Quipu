@@ -24,16 +24,7 @@
 
         <StackPanel Margin="0,0,0,0" HorizontalAlignment="Left" Width="auto" Height="auto" VerticalAlignment="Center" Grid.Column="1">
             <DataGrid Name="Data" AutoGenerateColumns="True" Width="auto" Height="auto" HorizontalAlignment="Right"  VerticalAlignment="Top" ItemsSource="{Binding Urls}">
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Flag}" Value="True">
-                                <Setter Property="Background" Value="Green"></Setter>
-                            </DataTrigger>
-                            
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
+                
             </DataGrid>
         </StackPanel>
     </Grid>
