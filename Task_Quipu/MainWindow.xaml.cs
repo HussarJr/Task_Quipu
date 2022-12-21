@@ -29,6 +29,7 @@ namespace Task_Quipu
 {
     public partial class MainWindow : Window
     {
+
         
         public MainWindow()
         { 
@@ -43,6 +44,7 @@ namespace Task_Quipu
             public string? Url { get; set; }
             public string? Code { get; set; }
             public int A { get; set; }
+            
         }
 
         private List<Urls> urls = new();
@@ -98,6 +100,9 @@ namespace Task_Quipu
                 Dispatcher.Invoke(() => progressBar.Value++);
                 Dispatcher.Invoke(() => Data.Items.Refresh());
             }
+            var p = urls.Max(Urls => Urls.A);
+            var max = urls.Find(Urls => Urls.A == p);
+            MessageBox.Show("Max:\nurl: " + max.Url + "\na: " + max.A);
             Dispatcher.Invoke(() => buttonStart.Background = new SolidColorBrush(Colors.Lime));
             Dispatcher.Invoke(() => buttonStart.Content = "Start");
             
@@ -115,7 +120,7 @@ namespace Task_Quipu
                 {
                     cancelTokenSource = new CancellationTokenSource();
                     token = cancelTokenSource.Token;
-                    await Task.Run(() => GetAFromUrl(), cancelTokenSource.Token);
+                    await Task.Run(() => GetAFromUrl(), token);
                 }
             }
             catch (Exception exc)
@@ -145,7 +150,7 @@ namespace Task_Quipu
                     {
                         urls.Add(new Urls() { Url = str[i] });
                     }
-                    MessageBox.Show(urls.Count.ToString());
+                    //MessageBox.Show(urls.Count.ToString());
                     Data.ItemsSource = urls;
                     this.SizeToContent = SizeToContent.WidthAndHeight;
                 }
