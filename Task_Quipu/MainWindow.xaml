@@ -8,29 +8,30 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="600*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Width="200" HorizontalAlignment="Left" VerticalAlignment="Center">
-            <TextBox Name="textEnter" Text="enter"/>
+        <StackPanel Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Height="150" Grid.Column="0">
             <DockPanel>
                 <WrapPanel HorizontalAlignment="Center" DockPanel.Dock="Top" Margin="0,0,0,10">
-                    <Button Name="buttonOpenFile" Content=" Open file" Click="buttonOpenFile_Click"/>
+                    <Button Name="buttonOpenFile" Content=" Open file" Click="ButtonOpenFile_Click" HorizontalAlignment="Left" Width="200" Height="20"/>
                 </WrapPanel>
             </DockPanel>
-            <Button Name="buttonStart" Height="20"  Content="Start" Click="buttonStart_Click"/>
-
+            <Button Name="buttonStart" Height="20"  Content="Start" Click="ButtonStart_Click" Background="#00FF00"/>
+            <Button Name="buttonStop" Height="20"  Content="Stop" Click="ButtonStop_Click" Background="Red"/>
             <TextBlock Name="textProgress" Text="Progress" HorizontalAlignment="Center" Height="20"/>
 
-            <ProgressBar Name="progressBar" Height="20" Foreground="Green"/>
+            <ProgressBar Name="progressBar" Height="20" Foreground="#00FF7F"/>
 
-            <Button Name="buttonExit" Content="Exit" Height="20" Background="Red" Click="buttonExit_Click"/>
+            <Button x:Name="buttonExit" Content="Exit" Height="20" Background="Red" Click="ButtonExit_Click"/>
 
         </StackPanel>
 
-        <StackPanel Width="600" HorizontalAlignment="Left" Margin="200,0,0,0" Grid.ColumnSpan="2">
-          
+        <StackPanel Margin="0,0,0,0" HorizontalAlignment="Left" Width="auto" Height="auto" VerticalAlignment="Center" Grid.Column="1">
+            <DataGrid Name="Data" AutoGenerateColumns="True" Height="400"   HorizontalAlignment="Center"  VerticalAlignment="Top" Width="500">
+
+            </DataGrid>
         </StackPanel>
     </Grid>
 </Window>

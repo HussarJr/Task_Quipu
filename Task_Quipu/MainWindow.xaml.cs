@@ -1,10 +1,12 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Printing;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,21 +22,34 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Task_Quipu
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private string[] urls;
+        
         public MainWindow()
         {
+
             InitializeComponent();
         }
 
-        private int GetACount(string str)
+        private static CancellationTokenSource cancelTokenSource = new();
+        private CancellationToken token = cancelTokenSource.Token;
+
+        private class Urls
+        {
+            public string? Url { get; set; }
+            public string? Code { get; set; }
+            public int A { get; set; }
+        }
+
+        private List<Urls> urls = new();
+
+
+        private static int GetACount(string str)
         {
             int count1 = (str.Length - str.Replace("<a", "").Length) / 2;
             int count2 = (str.Length - str.Replace("/a>", "").Length) / 3;
@@ -52,57 +67,111 @@ namespace Task_Quipu
             }
         }
 
-        async Task GetAFromUrl(string str)
+        private async void GetAFromUrl()
+        {
+            Dispatcher.Invoke(() => buttonStart.Background = new SolidColorBrush(Colors.Yellow));
+            Dispatcher.Invoke(() => buttonStart.Content = "Working");
+            HttpClient client = new();
+            Dispatcher.Invoke(() => progressBar.Value = 0);
+            Dispatcher.Invoke(() => progressBar.Maximum = urls.Count);
+            for (int i = 0; i < urls.Count; i++)
+            {
+                try
+                {
+                    if (token.IsCancellationRequested)  
+                    {
+                        Dispatcher.Invoke(() => buttonStart.Background = new SolidColorBrush(Colors.Lime));
+                        Dispatcher.Invoke(() => buttonStart.Content = "Restart");
+                        return;
+                    }
+                    var response = await client.GetAsync(urls[i].Url);
+                    response.EnsureSuccessStatusCode();
+                    urls[i].Code = response.StatusCode.ToString();
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    urls[i].A = GetACount(responseBody);
+                    //Data.Items.Add(urls[i] + "\t" + response.StatusCode.ToString() + "\t" + GetACount(responseBody).ToString() + "\n"));
+                }
+                catch (Exception e)
+                {
+                    //Dispatcher.Invoke(() => Data.Items.Add(urls[i] + e.Message  + "\n"));
+                    urls[i].Code = e.Message;
+                    urls[i].A = 0;
+                }
+                Thread.Sleep(1000);
+                Dispatcher.Invoke(() => progressBar.Value++);
+                Dispatcher.Invoke(() => Data.Items.Refresh());
+            }
+            Dispatcher.Invoke(() => buttonStart.Background = new SolidColorBrush(Colors.Lime));
+            Dispatcher.Invoke(() => buttonStart.Content = "Start");
+            
+        }
+
+        private async void ButtonStart_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string url = str;
-                HttpClient client = new HttpClient();
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                MessageBox.Show(GetACount(responseBody).ToString());
+                if (urls.Count == 0)
+                {
+                    MessageBox.Show("No urls");
+                }
+                else
+                {
+                    cancelTokenSource = new CancellationTokenSource();
+                    token = cancelTokenSource.Token;
+                    await Task.Run(() => GetAFromUrl(), cancelTokenSource.Token);
+                }
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show("\nException Caught!" + "\n" + e.Message);
+                MessageBox.Show(exc.Message);
             }
-        }
-        private async void buttonStart_Click(object sender, RoutedEventArgs e)
-        {
-            string str = textEnter.Text;
-            MessageBox.Show(str);
-            await GetAFromUrl(str);
         }
 
-        private void buttonExit_Click(object sender, RoutedEventArgs e)
+        private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        async void buttonOpenFile_Click(object sender, RoutedEventArgs e)
+        private void ButtonOpenFile_Click(object sender, RoutedEventArgs e)
         {
-            var myPanel = new StackPanel();
-            myPanel.BeginAnimation();
-            myPanel.Width = 600;
-            myPanel.HorizontalAlignment = HorizontalAlignment.Left;
-            
-
-
-            var txt = new TextBox(); //Width = "600" HorizontalAlignment = "Left" Margin = "200,0,0,0" Grid.ColumnSpan = "2"
-            myPanel.Children.Add(txt);
-            
-            this.Content = myPanel;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
+            try
             {
-                urls = File.ReadAllLines(openFileDialog.FileName);
-                for (int i = 0; i < urls.Length; i++)
+                OpenFileDialog openFileDialog = new();
+                urls.Clear();
+                Data.ClearValue(ItemsControl.ItemsSourceProperty);
+                buttonStart.Content = "Start";
+                openFileDialog.Reset();
+                if (openFileDialog.ShowDialog() == true)
                 {
-                    txt.AppendText(urls[i] + "\n");
+                    string[] str = File.ReadAllLines(openFileDialog.FileName);
+                    for (int i = 0; i < str.Length; i++)
+                    {
+                        urls.Add(new Urls() { Url = str[i] });
+                    }
+                    MessageBox.Show(urls.Count.ToString());
+                    Data.ItemsSource = urls;
+                    this.SizeToContent = SizeToContent.WidthAndHeight;
                 }
+                openFileDialog.Reset();
             }
-            
+            catch (Exception exp)
+            {
+                MessageBox.Show(exp.Message);
+                Data.Items.Refresh();
+            }
+
+        }
+
+        private void ButtonStop_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                cancelTokenSource.Cancel();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
